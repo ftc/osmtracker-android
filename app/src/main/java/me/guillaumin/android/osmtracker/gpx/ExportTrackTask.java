@@ -155,7 +155,8 @@ public abstract class ExportTrackTask  extends AsyncTask<Void, Long, Boolean> {
 		} else if (values.length == 3) {
 			// To initialise the dialog, 3 values are passed to onProgressUpdate()
 			// trackId, number of track points, number of waypoints
-			dialog.dismiss();
+			if(dialog.isShowing())
+				dialog.dismiss();
 			
 			dialog = new ProgressDialog(context);
 			dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -173,7 +174,8 @@ public abstract class ExportTrackTask  extends AsyncTask<Void, Long, Boolean> {
 
 	@Override
 	protected void onPostExecute(Boolean success) {
-		dialog.dismiss();
+		if(dialog.isShowing())
+			dialog.dismiss();
 		if (!success) {
 			new AlertDialog.Builder(context)
 				.setTitle(android.R.string.dialog_alert_title)
@@ -184,7 +186,8 @@ public abstract class ExportTrackTask  extends AsyncTask<Void, Long, Boolean> {
 				.setNeutralButton(android.R.string.ok, new OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();						
+						if(((AlertDialog)dialog).isShowing())
+							dialog.dismiss();
 					}
 				})
 				.show();
