@@ -146,7 +146,11 @@ public abstract class ExportTrackTask  extends AsyncTask<Void, Long, Boolean> {
 		}
 		return true;
 	}
-	
+
+	public void parentNotVisible(){
+		if(getStatus() == Status.FINISHED || getStatus() == Status.RUNNING)
+			dialog.dismiss();
+	}
 	@Override
 	protected void onProgressUpdate(Long... values) {
 		if (values.length == 1) {
@@ -174,8 +178,10 @@ public abstract class ExportTrackTask  extends AsyncTask<Void, Long, Boolean> {
 
 	@Override
 	protected void onPostExecute(Boolean success) {
-		if(dialog.isShowing())
+		if(dialog.isShowing()) {
+			Log.i("ExportTrack", "dismiss");
 			dialog.dismiss();
+		}
 		if (!success) {
 			new AlertDialog.Builder(context)
 				.setTitle(android.R.string.dialog_alert_title)

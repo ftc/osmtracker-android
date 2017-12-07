@@ -21,6 +21,7 @@ import android.database.Cursor;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -70,6 +71,8 @@ public class TrackDetail extends TrackDetailEditor implements AdapterView.OnItem
 	 * List with track info
 	 */
 	private ListView lv;
+
+	private ExportToStorageTask exportToStorageTask = new ExportToStorageTask(this, null);
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +103,11 @@ public class TrackDetail extends TrackDetailEditor implements AdapterView.OnItem
 		
 		// further work is done in onResume.
 	}
-
+	@Override
+	protected void onPause(){
+		super.onPause();
+		exportToStorageTask.parentNotVisible();
+	}
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -230,7 +237,10 @@ public class TrackDetail extends TrackDetailEditor implements AdapterView.OnItem
 			startActivity(i);	
 			break;
 		case R.id.trackdetail_menu_export:
-			new ExportToStorageTask(this, trackId).execute();
+			//new ExportToStorageTask(this, trackId).execute();
+			exportToStorageTask =  new ExportToStorageTask(this, trackId);
+			exportToStorageTask.execute();
+
 			// Pick last list item (Exported date) and update it
 			SimpleAdapter adapter = ((SimpleAdapter) lv.getAdapter());
 			@SuppressWarnings("unchecked")

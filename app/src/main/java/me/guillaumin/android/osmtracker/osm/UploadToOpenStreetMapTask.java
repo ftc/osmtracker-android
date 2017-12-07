@@ -161,6 +161,8 @@ public class UploadToOpenStreetMapTask extends AsyncTask<Void, Void, Void> {
 		case -1:
 			if(dialog.isShowing())
 				dialog.dismiss();
+			else
+				Log.i("======","averted exception");
 			// Internal error, the request didn't start at all
 			DialogUtils.showErrorDialog(activity,
 					activity.getResources().getString(R.string.osm_upload_error)
@@ -169,6 +171,8 @@ public class UploadToOpenStreetMapTask extends AsyncTask<Void, Void, Void> {
 		case HttpStatus.SC_OK:
 			if(dialog.isShowing())
 				dialog.dismiss();
+			else
+				Log.i("======","averted exception");
 			// Success ! Update database and close activity
 			DataHelper.setTrackUploadDate(trackId, System.currentTimeMillis(), activity.getContentResolver());
 			
@@ -189,6 +193,8 @@ public class UploadToOpenStreetMapTask extends AsyncTask<Void, Void, Void> {
 		case HttpStatus.SC_UNAUTHORIZED:
 			if(dialog.isShowing())
 				dialog.dismiss();
+			else
+				Log.i("======","averted exception");
 			// Authorization issue. Provide a way to clear credentials
 			new AlertDialog.Builder(activity)
 					.setTitle(android.R.string.dialog_alert_title)
@@ -225,6 +231,8 @@ public class UploadToOpenStreetMapTask extends AsyncTask<Void, Void, Void> {
 				}
 				if(dialog.isShowing())
 					dialog.dismiss();
+				else
+					Log.i("======","averted exception");
 				
 				DialogUtils.showErrorDialog(activity,
 						activity.getResources().getString(R.string.osm_upload_bad_response)
@@ -256,7 +264,11 @@ public class UploadToOpenStreetMapTask extends AsyncTask<Void, Void, Void> {
 			Log.e(TAG, "doInBackground failed", e);
 			errorMsg = e.getLocalizedMessage();
 		}
-		
+
 		return null;
+	}
+	public void parentNotVisible(){
+		if(getStatus() == Status.FINISHED || getStatus() == Status.RUNNING)
+			dialog.dismiss();
 	}
 }

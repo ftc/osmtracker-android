@@ -51,7 +51,15 @@ public class OpenStreetMapUpload extends TrackDetailEditor {
 	private static final CommonsHttpOAuthConsumer oAuthConsumer = new CommonsHttpOAuthConsumer(
 			OpenStreetMapConstants.OAuth.CONSUMER_KEY,
 			OpenStreetMapConstants.OAuth.CONSUMER_SECRET);
-	
+	private static UploadToOpenStreetMapTask uploadToOpenStreetMap =
+			new UploadToOpenStreetMapTask(null, 0, null,
+					null, null, null, null, null);
+
+	@Override
+	protected void onPause(){
+		super.onPause();
+		uploadToOpenStreetMap.parentNotVisible();
+	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
@@ -154,10 +162,11 @@ public class OpenStreetMapUpload extends TrackDetailEditor {
 		new ExportToTempFileTask(this, trackId) {
 			@Override
 			protected void executionCompleted() {
-				new UploadToOpenStreetMapTask(OpenStreetMapUpload.this, trackId, oAuthConsumer, this.getTmpFile(),
+				uploadToOpenStreetMap =
+					new UploadToOpenStreetMapTask(OpenStreetMapUpload.this, trackId, oAuthConsumer, this.getTmpFile(),
 						this.getFilename(), etDescription.getText().toString(), etTags.getText().toString(),
-						OSMVisibility.fromPosition(OpenStreetMapUpload.this.spVisibility.getSelectedItemPosition()))
-							.execute();
+						OSMVisibility.fromPosition(OpenStreetMapUpload.this.spVisibility.getSelectedItemPosition()));
+				uploadToOpenStreetMap.execute();
 			}
 		}.execute();
 	}
